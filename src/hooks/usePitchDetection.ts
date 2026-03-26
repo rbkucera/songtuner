@@ -6,8 +6,10 @@ export interface PitchData {
   clarity: number;
 }
 
-const MIN_CLARITY = 0.9;
+const MIN_CLARITY = 0.85;
 const FFT_SIZE = 4096;
+const EMA_ALPHA = 0.3; // Lower = smoother, higher = more responsive
+const HOLD_MS = 500;   // Keep showing last pitch for this long after signal drops
 
 export function usePitchDetection(stream: MediaStream | null) {
   const [pitch, setPitch] = useState<PitchData | null>(null);
@@ -17,6 +19,9 @@ export function usePitchDetection(stream: MediaStream | null) {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number>(0);
   const detectorRef = useRef<PitchDetector<Float32Array> | null>(null);
+  const smoothedFreqRef = useRef<number | null>(null);
+  const lastGoodTimeRef = useRef<number>(0);
+  const lastGoodPitchRef = useRef<PitchData | null>(null);
 
   const start = useCallback(() => {
     if (!stream || isListening) return;
@@ -31,6 +36,9 @@ export function usePitchDetection(stream: MediaStream | null) {
     audioContextRef.current = audioContext;
     analyserRef.current = analyser;
     detectorRef.current = PitchDetector.forFloat32Array(analyser.fftSize);
+    smoothedFreqRef.current = null;
+    lastGoodTimeRef.current = 0;
+    lastGoodPitchRef.current = null;
 
     setIsListening(true);
 
@@ -44,10 +52,31 @@ export function usePitchDetection(stream: MediaStream | null) {
         audioContext.sampleRate
       );
 
+      const now = performance.now();
+
       if (clarity >= MIN_CLARITY && frequency > 20 && frequency < 2000) {
-        setPitch({ frequency, clarity });
+        // Apply EMA smoothing to frequency
+        const prev = smoothedFreqRef.current;
+        const smoothed = prev !== null
+          ? EMA_ALPHA * frequency + (1 - EMA_ALPHA) * prev
+          : frequency;
+        smoothedFreqRef.current = smoothed;
+
+        const pitchData = { frequency: smoothed, clarity };
+        lastGoodPitchRef.current = pitchData;
+        lastGoodTimeRef.current = now;
+        setPitch(pitchData);
       } else {
-        setPitch(null);
+        // Hold the last good reading for HOLD_MS
+        const elapsed = now - lastGoodTimeRef.current;
+        if (elapsed < HOLD_MS && lastGoodPitchRef.current) {
+          // Keep showing last good pitch (already set)
+        } else {
+          // Signal truly gone — clear display
+          smoothedFreqRef.current = null;
+          lastGoodPitchRef.current = null;
+          setPitch(null);
+        }
       }
 
       rafRef.current = requestAnimationFrame(detect);
@@ -67,6 +96,9 @@ export function usePitchDetection(stream: MediaStream | null) {
     }
     analyserRef.current = null;
     detectorRef.current = null;
+    smoothedFreqRef.current = null;
+    lastGoodTimeRef.current = 0;
+    lastGoodPitchRef.current = null;
     setIsListening(false);
     setPitch(null);
   }, []);
