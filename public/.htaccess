@@ -1,0 +1,16 @@
+# SPA fallback: route all non-file requests to index.html
+# API requests are handled by PHP files in /api/
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Don't rewrite API requests (let PHP handle them)
+  RewriteRule ^api/ - [L]
+
+  # Don't rewrite requests for existing files or directories
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Route everything else to index.html (React Router)
+  RewriteRule ^ index.html [L]
+</IfModule>
