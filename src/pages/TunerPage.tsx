@@ -9,8 +9,8 @@ import type { TuningDefinition } from '../types/song';
 
 export function TunerPage() {
   const [tuning, setTuning] = useState<TuningDefinition>(TUNINGS.standard);
-  const { state: permState, stream, error, requestPermission, stopStream } = useAudioPermission();
-  const { pitch, isListening, start, stop } = usePitchDetection(stream);
+  const { state: permState, error, requestPermission, stopStream } = useAudioPermission();
+  const { pitch, isListening, start, stop } = usePitchDetection();
 
   const detected = useMemo(() => {
     if (!pitch) return null;
@@ -24,8 +24,7 @@ export function TunerPage() {
     } else {
       const mediaStream = await requestPermission();
       if (mediaStream) {
-        // Small delay to ensure stream is ready
-        setTimeout(() => start(), 100);
+        start(mediaStream);
       }
     }
   };

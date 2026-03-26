@@ -11,7 +11,7 @@ const FFT_SIZE = 4096;
 const EMA_ALPHA = 0.3; // Lower = smoother, higher = more responsive
 const HOLD_MS = 500;   // Keep showing last pitch for this long after signal drops
 
-export function usePitchDetection(stream: MediaStream | null) {
+export function usePitchDetection() {
   const [pitch, setPitch] = useState<PitchData | null>(null);
   const [isListening, setIsListening] = useState(false);
 
@@ -23,7 +23,7 @@ export function usePitchDetection(stream: MediaStream | null) {
   const lastGoodTimeRef = useRef<number>(0);
   const lastGoodPitchRef = useRef<PitchData | null>(null);
 
-  const start = useCallback(() => {
+  const start = useCallback((stream: MediaStream) => {
     if (!stream || isListening) return;
 
     const audioContext = new AudioContext();
@@ -83,7 +83,7 @@ export function usePitchDetection(stream: MediaStream | null) {
     };
 
     detect();
-  }, [stream, isListening]);
+  }, [isListening]);
 
   const stop = useCallback(() => {
     if (rafRef.current) {

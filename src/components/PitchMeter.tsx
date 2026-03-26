@@ -29,7 +29,7 @@ export function PitchMeter({ centsOff, inTune }: PitchMeterProps) {
 
         {/* Indicator */}
         <div
-          className={`absolute top-0 bottom-0 w-4 rounded-full transition-all duration-100 ${getColor()}`}
+          className={`absolute top-0 bottom-0 w-4 rounded-full ${getColor()}`}
           style={{ left: `calc(${position}% - 8px)` }}
         />
       </div>
