@@ -3,6 +3,7 @@ import { useAudioPermission } from '../hooks/useAudioPermission';
 import { usePitchDetection } from '../hooks/usePitchDetection';
 import { useStringLock } from '../hooks/useStringLock';
 import { useTheme } from '../themes/useTheme';
+import { themes } from '../themes/registry';
 import { TUNINGS } from '../lib/tunings';
 import { DefaultHeader } from '../themes/defaults/DefaultHeader';
 import { DefaultNoteDisplay } from '../themes/defaults/DefaultNoteDisplay';
@@ -13,8 +14,11 @@ import { DefaultTuningSelector } from '../themes/defaults/DefaultTuningSelector'
 import type { TuningDefinition } from '../types/song';
 
 export function TunerPage() {
-  const { theme } = useTheme();
+  const { theme, themeId, setTheme } = useTheme();
   const t = theme.tokens;
+
+  // Theme chooser state
+  const [showThemeChooser, setShowThemeChooser] = useState(false);
 
   // Resolve themed slot components
   const Header = theme.components?.Header ?? DefaultHeader;
@@ -53,8 +57,79 @@ export function TunerPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
-      {/* Slot: Header */}
-      <Header />
+      {/* Slot: Header — tap to open theme chooser */}
+      <div onClick={() => setShowThemeChooser(true)} style={{ cursor: 'pointer' }}>
+        <Header />
+      </div>
+
+      {/* Theme chooser overlay */}
+      {showThemeChooser && (
+        <div
+          onClick={() => setShowThemeChooser(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              backgroundColor: '#1a1a1a',
+              border: '1px solid #444',
+              borderRadius: '8px',
+              padding: '24px',
+              width: '100%',
+              maxWidth: '320px',
+            }}
+          >
+            <h2 style={{
+              fontFamily: 'system-ui, sans-serif',
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#aaa',
+              textTransform: 'uppercase',
+              letterSpacing: '0.15em',
+              margin: '0 0 16px',
+              textAlign: 'center',
+            }}>
+              Choose Theme
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {Object.values(themes).map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setTheme(t.id);
+                    setShowThemeChooser(false);
+                  }}
+                  style={{
+                    padding: '14px 16px',
+                    borderRadius: '6px',
+                    border: t.id === themeId ? '2px solid #fff' : '1px solid #333',
+                    backgroundColor: t.id === themeId ? '#333' : '#222',
+                    color: '#eee',
+                    fontFamily: 'system-ui, sans-serif',
+                    fontSize: '16px',
+                    fontWeight: t.id === themeId ? 700 : 400,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    WebkitAppearance: 'none',
+                  }}
+                >
+                  {t.name}
+                  {t.id === themeId && <span style={{ float: 'right', fontSize: '14px' }}>✓</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Slot: Display area */}
       <div style={{
