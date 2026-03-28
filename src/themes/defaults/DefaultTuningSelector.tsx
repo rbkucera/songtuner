@@ -1,21 +1,20 @@
-import { GUITAR_TUNINGS, BASS_TUNINGS } from '../lib/tunings';
-import type { TuningDefinition } from '../types/song';
+import { useTheme } from '../useTheme';
+import { GUITAR_TUNINGS, BASS_TUNINGS } from '../../lib/tunings';
+import type { TuningSelectorProps } from '../types';
 
-interface TuningSelectorProps {
-  selected: TuningDefinition;
-  onChange: (tuning: TuningDefinition) => void;
-}
+export function DefaultTuningSelector({ selected, onChange }: TuningSelectorProps) {
+  const { theme } = useTheme();
+  const t = theme.tokens;
 
-export function TuningSelector({ selected, onChange }: TuningSelectorProps) {
   return (
     <div className="px-5">
       <label style={{
         display: 'block',
-        fontFamily: 'var(--font-display)',
+        fontFamily: t.fontDisplay as string,
         fontSize: '10px',
         fontWeight: 700,
         letterSpacing: '0.2em',
-        color: '#6a6258',
+        color: t.colorMuted as string,
         marginBottom: '6px',
       }}>
         TUNING
@@ -30,12 +29,12 @@ export function TuningSelector({ selected, onChange }: TuningSelectorProps) {
           }}
           style={{
             width: '100%',
-            backgroundColor: '#0f0f0f',
-            color: '#e8dcc8',
-            border: '1px solid #c4916a',
+            backgroundColor: t.colorBg as string,
+            color: t.colorText as string,
+            border: `1px solid ${t.colorAccent}`,
             borderRadius: '4px',
             padding: '10px 36px 10px 12px',
-            fontFamily: 'var(--font-display)',
+            fontFamily: t.fontDisplay as string,
             fontSize: '13px',
             fontWeight: 700,
             letterSpacing: '0.05em',
@@ -46,31 +45,19 @@ export function TuningSelector({ selected, onChange }: TuningSelectorProps) {
         >
           <optgroup label="GUITAR">
             {GUITAR_TUNINGS.map(t => (
-              <option key={t.name} value={t.name}>
-                {t.displayName.toUpperCase()}
-              </option>
+              <option key={t.name} value={t.name}>{t.displayName.toUpperCase()}</option>
             ))}
           </optgroup>
           <optgroup label="BASS">
             {BASS_TUNINGS.map(t => (
-              <option key={t.name} value={t.name}>
-                {t.displayName.toUpperCase()}
-              </option>
+              <option key={t.name} value={t.name}>{t.displayName.toUpperCase()}</option>
             ))}
           </optgroup>
         </select>
-        {/* Custom rose-gold dropdown arrow */}
         <div style={{
-          position: 'absolute',
-          right: '12px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          pointerEvents: 'none',
-          color: '#c4916a',
-          fontSize: '12px',
-        }}>
-          ▼
-        </div>
+          position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+          pointerEvents: 'none', color: t.colorAccent as string, fontSize: '12px',
+        }}>▼</div>
       </div>
     </div>
   );

@@ -1,26 +1,21 @@
-// 21-segment LED bar graph tuning meter.
-// Segments light up from center outward: green (close), amber (near), red (far).
-// Inactive segments are dimly visible — classic LED "off" look.
+import { useTheme } from '../useTheme';
+import type { PitchMeterProps } from '../types';
 
-interface PitchMeterProps {
-  centsOff: number;
-  inTune: boolean;
-}
+const TOTAL_SEGMENTS = 21;
+const CENTER = Math.floor(TOTAL_SEGMENTS / 2);
 
-const TOTAL_SEGMENTS = 21; // must be odd
-const CENTER = Math.floor(TOTAL_SEGMENTS / 2); // index 10
+export function DefaultPitchMeter({ centsOff, inTune }: PitchMeterProps) {
+  const { theme } = useTheme();
+  const t = theme.tokens;
 
-// Map a segment's distance from center to its color role
-function segmentColor(distFromCenter: number): { active: string; dim: string } {
-  if (distFromCenter <= 2) return { active: '#00e644', dim: 'rgba(0,230,68,0.07)' };
-  if (distFromCenter <= 5) return { active: '#ff7700', dim: 'rgba(255,119,0,0.07)' };
-  return { active: '#ff2200', dim: 'rgba(255,34,0,0.07)' };
-}
+  function segmentColor(dist: number) {
+    if (dist <= 2) return { active: t.colorInTune as string, dim: `${t.colorInTune}12` };
+    if (dist <= 5) return { active: t.colorAccent as string, dim: `${t.colorAccent}12` };
+    return { active: t.colorError as string, dim: `${t.colorError}12` };
+  }
 
-export function PitchMeter({ centsOff, inTune }: PitchMeterProps) {
-  // How many segments to light on each side of center (1 segment = ~5 cents)
   const litCount = inTune ? 1 : Math.min(CENTER, Math.round(Math.abs(centsOff) / 5));
-  const direction = centsOff < 0 ? 'left' : 'right'; // flat = left, sharp = right
+  const direction = centsOff < 0 ? 'left' : 'right';
 
   const isLit = (index: number): boolean => {
     if (litCount === 0) return index === CENTER;
@@ -30,18 +25,15 @@ export function PitchMeter({ centsOff, inTune }: PitchMeterProps) {
     return false;
   };
 
-  const outerLitDist = inTune ? 0 : Math.min(CENTER, Math.round(Math.abs(centsOff) / 5));
-  const { active: readoutColor } = segmentColor(outerLitDist);
+  const outerDist = inTune ? 0 : Math.min(CENTER, Math.round(Math.abs(centsOff) / 5));
+  const { active: readoutColor } = segmentColor(outerDist);
 
   return (
     <div className="w-full px-4">
-      {/* Direction labels */}
-      <div className="flex justify-between mb-2" style={{ fontFamily: 'var(--font-display)', fontSize: '10px', letterSpacing: '0.15em', color: '#6a6258' }}>
+      <div className="flex justify-between mb-2" style={{ fontFamily: t.fontDisplay as string, fontSize: '10px', letterSpacing: '0.15em', color: t.colorMuted as string }}>
         <span>FLAT</span>
         <span>SHARP</span>
       </div>
-
-      {/* LED segments */}
       <div className="flex justify-center gap-1">
         {Array.from({ length: TOTAL_SEGMENTS }, (_, i) => {
           const dist = Math.abs(i - CENTER);
@@ -63,14 +55,12 @@ export function PitchMeter({ centsOff, inTune }: PitchMeterProps) {
           );
         })}
       </div>
-
-      {/* Cents readout */}
       <div className="text-center mt-3">
         <span style={{
-          fontFamily: 'var(--font-readout)',
+          fontFamily: t.fontReadout as string,
           fontSize: '20px',
-          color: inTune ? '#00e644' : readoutColor,
-          textShadow: `0 0 10px ${inTune ? '#00e644' : readoutColor}`,
+          color: inTune ? t.colorInTune as string : readoutColor,
+          textShadow: `0 0 10px ${inTune ? t.colorInTune : readoutColor}`,
         }}>
           {inTune ? 'IN TUNE' : `${centsOff > 0 ? '+' : ''}${Math.round(centsOff)} cents`}
         </span>
