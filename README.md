@@ -1,28 +1,35 @@
-# SongTuner
+# PITCHBLCK
 
-A guitar tuning app that knows what tuning your favorite songs use. Built for mobile Safari on iPhone.
+A themeable guitar and bass tuner with real-time pitch detection. Built for mobile Safari on iPhone.
 
-## Current State (Phase 1)
-
-Standalone guitar/bass tuner with real-time pitch detection via the device microphone. Supports 11 tunings across guitar and bass.
-
-### Features
+## Features
 
 - Real-time pitch detection using the McLeod Pitch Method (`pitchy` library)
 - Auto-detects which string you're playing
-- Visual pitch meter with cents-off readout and flat/sharp guidance
+- Hysteresis string locking prevents harmonic jumping mid-tune
+- Octave error correction for reliable low-string detection
+- EMA smoothing for stable readings, even on unplugged electric guitars
 - Supports 11 tunings:
   - **Guitar**: Standard, Drop D, Open G, Open D, Open E, DADGAD, Half Step Down, Drop C
   - **Bass**: Standard (4-string), 5-String, Drop D
-- EMA smoothing for stable readings, even on unplugged electric guitars
-- Dark theme, mobile-first UI
+- Themeable component architecture — tap the header to switch themes
 
-### Planned (Phase 2+)
+## Themes
 
-- Song search by artist + title (via Songsterr API + Claude AI fallback)
-- Per-song instrument roles (lead guitar, rhythm guitar, bass)
-- Auto-select the correct tuning for a song
-- PHP + MySQL backend for caching song data (Dreamhost)
+Two built-in themes ship with the app:
+
+- **PITCHBLCK** — LED bar graph meter, woven speaker-cloth texture, rose gold chrome, Orbitron typeface. Inspired by death metal, Tool, and premium guitar gear.
+- **Analog Reborn** — SVG needle gauge over a cream graduated dial, black bakelite housing, chrome hardware, DM Serif Display typography. Inspired by 1950s analog instrumentation.
+
+See [`src/themes/README.md`](src/themes/README.md) for how to create your own theme.
+
+## Roadmap
+
+- Theme gallery / community themes
+- Reference tone playback (tap a string to hear the target pitch)
+- Custom tuning editor
+- PWA offline support with app manifest
+- Visual/haptic feedback when string is in tune
 
 ## Development
 
@@ -38,7 +45,7 @@ npm install
 npm run dev
 ```
 
-Open on your phone (same network) or use the local URL. The tuner requires microphone access — tap "Start Tuning" to begin.
+Open on your phone (same network) or use the local URL. The tuner requires microphone access — tap the start button to begin.
 
 ### Build for Production
 
@@ -46,17 +53,18 @@ Open on your phone (same network) or use the local URL. The tuner requires micro
 npm run build
 ```
 
-This produces a `dist/` folder with static files (HTML, CSS, JS). Asset paths are relative (`base: './'`), so the build works in any subdirectory.
+Produces a `dist/` folder with static files (HTML, CSS, JS). Asset paths are relative (`base: './'`), so the build works in any subdirectory.
 
-### Deploy to Dreamhost
+### Deploy
 
 1. Run `npm run build` locally
-2. Upload the contents of `dist/` to your Dreamhost directory (e.g., `~/rycera.com/tuner/`)
+2. Upload the contents of `dist/` to your web server (e.g., `~/rycera.com/tuner/`)
 3. The included `.htaccess` handles SPA routing on Apache
 
 ## Tech Stack
 
-- React 18 + TypeScript + Vite
+- React 19 + TypeScript + Vite
 - Tailwind CSS v4
 - Web Audio API + `pitchy` (McLeod Pitch Method)
-- Deployed as static files on Dreamhost shared hosting
+- Component-level theme system with design tokens
+- Deployed as static files
