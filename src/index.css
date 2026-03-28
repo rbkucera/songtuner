@@ -1,20 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-tune-flat: #ef4444;
-  --color-tune-sharp: #f59e0b;
-  --color-tune-good: #22c55e;
-  --color-bg-dark: #0f172a;
-  --color-bg-card: #1e293b;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #94a3b8;
-  --color-accent: #6366f1;
+  /* LED colors */
+  --color-led-red: #ff2200;
+  --color-led-amber: #ff7700;
+  --color-led-green: #00e644;
+  /* UI colors */
+  --color-rose-gold: #c4916a;
+  --color-rose-gold-dark: #8a5425;
+  --color-aged-white: #e8dcc8;
+  --color-panel: #141414;
+  --color-bg: #0b0b0c;
+  --color-muted: #6a6258;
+  /* Fonts */
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-readout: 'Share Tech Mono', ui-monospace, monospace;
 }
 
 body {
   margin: 0;
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-primary);
+  background-color: #0b0b0c;
+  /* Woven speaker-cloth texture */
+  background-image:
+    repeating-linear-gradient(45deg, #161616 0px, #161616 1px, transparent 1px, transparent 5px),
+    repeating-linear-gradient(-45deg, #161616 0px, #161616 1px, transparent 1px, transparent 5px);
+  background-size: 6px 6px;
+  color: #e8dcc8;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
