@@ -109,9 +109,8 @@ interface NoteDisplayProps {
 }
 ```
 
-Shows the detected note name, octave, and frequency. Must handle three states:
-- `isListening === false` — idle, not started
-- `isListening === true && detected === null` — listening but no clear signal
+Shows the detected note name, octave, and frequency. Must handle two states:
+- `detected === null` — no pitch detected. Render a placeholder to maintain vertical space (e.g., a dimmed `--`). The skeleton shows a semi-transparent overlay with a prompt ("TAP START TO BEGIN" / "PLAY A STRING") on top.
 - `detected !== null` — active detection with note data
 
 `DetectedString` fields: `noteName` ("E2"), `detectedFrequency` (Hz), `centsOff`, `inTune`, `stringIndex`, `targetFrequency`.
@@ -125,7 +124,7 @@ interface PitchMeterProps {
 }
 ```
 
-The main cents visualization. This is where themes differ most — LED bar graph, needle gauge, oscilloscope, whatever you want. Only rendered when a note is detected.
+The main cents visualization. This is where themes differ most — LED bar graph, needle gauge, oscilloscope, whatever you want. Always rendered (even when idle with `centsOff: 0, inTune: false`). When no note is detected, a semi-transparent overlay covers the display area with a prompt.
 
 `centsOff` range is roughly -50 to +50 in practice. Values are already EMA-smoothed upstream — **do not add CSS transitions** to the indicator position or you'll get double-buffered lag.
 

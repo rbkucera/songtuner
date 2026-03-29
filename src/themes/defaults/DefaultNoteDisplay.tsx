@@ -1,26 +1,24 @@
 import { useTheme } from '../useTheme';
 import type { NoteDisplayProps } from '../types';
 
-export function DefaultNoteDisplay({ detected, isListening }: NoteDisplayProps) {
+export function DefaultNoteDisplay({ detected }: NoteDisplayProps) {
   const { theme } = useTheme();
   const t = theme.tokens;
 
-  if (!isListening) {
-    return (
-      <div className="text-center py-6">
-        <p style={{ fontFamily: t.fontDisplay as string, fontSize: '11px', letterSpacing: '0.15em', color: t.colorMuted as string }}>
-          PRESS START TO BEGIN
-        </p>
-      </div>
-    );
-  }
-
   if (!detected) {
+    // Idle placeholder — keeps vertical space consistent while overlay shows prompt
     return (
-      <div className="text-center py-6">
-        <p style={{ fontFamily: t.fontDisplay as string, fontSize: '11px', letterSpacing: '0.15em', color: t.colorMuted as string }}>
-          PLAY A STRING
-        </p>
+      <div style={{ textAlign: 'center', lineHeight: 1 }}>
+        <span style={{
+          fontFamily: t.fontDisplay as string,
+          fontSize: '88px',
+          fontWeight: 900,
+          letterSpacing: '-0.02em',
+          color: t.colorMuted as string,
+          opacity: 0.15,
+        }}>
+          --
+        </span>
       </div>
     );
   }

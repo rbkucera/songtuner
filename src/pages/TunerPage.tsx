@@ -131,7 +131,7 @@ export function TunerPage() {
         </div>
       )}
 
-      {/* Slot: Display area */}
+      {/* Slot: Display area — visualizer always visible */}
       <div style={{
         flex: 1,
         backgroundColor: t.colorPanelTranslucent as string,
@@ -143,19 +143,18 @@ export function TunerPage() {
         gap: '20px',
         padding: '16px 0',
       }}>
+        {/* Always render NoteDisplay, Meter, and Strings */}
         <NoteDisplay detected={detected} isListening={isListening} />
-        {detected && (
-          <>
-            <Meter centsOff={detected.centsOff} inTune={detected.inTune} />
-            <Strings tuning={tuning} activeStringIndex={detected.stringIndex} inTune={detected.inTune} />
-          </>
-        )}
-        {isListening && !detected && (
-          <Strings tuning={tuning} activeStringIndex={null} inTune={false} />
-        )}
-        {!isListening && (
-          <Strings tuning={tuning} activeStringIndex={null} inTune={false} />
-        )}
+        <Meter
+          centsOff={detected?.centsOff ?? 0}
+          inTune={detected?.inTune ?? false}
+        />
+        <Strings
+          tuning={tuning}
+          activeStringIndex={detected?.stringIndex ?? null}
+          inTune={detected?.inTune ?? false}
+        />
+
       </div>
 
       {/* Slot: Controls area */}

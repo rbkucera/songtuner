@@ -1,36 +1,18 @@
 import type { NoteDisplayProps } from '../types';
 
-export function AnalogNoteDisplay({ detected, isListening }: NoteDisplayProps) {
-  if (!isListening) {
-    return (
-      <div style={{ textAlign: 'center', padding: '8px 0' }}>
-        <p style={{
-          fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: '14px',
-          fontStyle: 'italic',
-          color: '#8a8070',
-          letterSpacing: '0.1em',
-          margin: 0,
-        }}>
-          Awaiting Signal
-        </p>
-      </div>
-    );
-  }
-
+export function AnalogNoteDisplay({ detected }: NoteDisplayProps) {
   if (!detected) {
+    // Idle placeholder — keeps vertical space consistent while overlay shows prompt
     return (
-      <div style={{ textAlign: 'center', padding: '8px 0' }}>
-        <p style={{
+      <div style={{ textAlign: 'center', lineHeight: 1, padding: '4px 0' }}>
+        <span style={{
           fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: '14px',
-          fontStyle: 'italic',
+          fontSize: '56px',
           color: '#8a8070',
-          letterSpacing: '0.1em',
-          margin: 0,
+          opacity: 0.15,
         }}>
-          Play a String
-        </p>
+          --
+        </span>
       </div>
     );
   }
