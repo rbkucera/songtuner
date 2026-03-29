@@ -37,12 +37,11 @@ Once installed, the app opens in standalone mode (no browser chrome) and works f
 
 ## Themes
 
-Four built-in themes ship with the app:
+Three built-in themes ship with the app:
 
 - **PITCHBLCK** — LED bar graph meter, woven speaker-cloth texture, rose gold chrome, Orbitron typeface. Inspired by death metal, Tool, and premium guitar gear.
-- **Analog Reborn** — SVG needle gauge over a cream graduated dial, black bakelite housing, chrome hardware, DM Serif Display typography. Inspired by 1950s analog instrumentation.
 - **Hyperwave 84** — Neon cyberpunk LED bars with glow effects, glass morphism panels, Audiowide typeface. Inspired by retro arcade and synthwave aesthetics.
-- **Cockpit Precision** — Aviation-inspired SVG dial gauge with dark instrument panel, amber accents, B612 Mono typeface (designed by Airbus for cockpit screens).
+- **Flight Tuner** — Aviation instrument panel with cream dial gauge, dark teal cockpit panel, amber accents, Barlow Condensed + IBM Plex Mono typefaces. All 6 component slots customized for a full cockpit experience.
 
 See [`src/themes/README.md`](src/themes/README.md) for how to create your own theme.
 
