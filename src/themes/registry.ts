@@ -2,14 +2,12 @@ import type { ThemeDefinition } from './types';
 import pitchblck from './pitchblck';
 import hyperwave84 from './hyperwave-84';
 import flightTuner from './flight-tuner';
-import cockpitPrecision from './cockpit-precision';
 // To add a theme: import it and add to the themes object below.
 
 export const themes: Record<string, ThemeDefinition> = {
   pitchblck,
   'hyperwave-84': hyperwave84,
-  'flight-tuner': flightTuner,
-  'cockpit-precision': cockpitPrecision
+  'flight-tuner': flightTuner
 };
 
 export const defaultThemeId = 'pitchblck';
