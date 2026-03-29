@@ -55,6 +55,10 @@ export function TunerPage() {
     setTuning(newTuning);
   };
 
+  // Show overlay prompt when not actively detecting
+  const showPrompt = !detected;
+  const promptMessage = !isListening ? 'TAP START TO BEGIN' : 'PLAY A STRING';
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
       {/* Slot: Header — tap to open theme chooser */}
@@ -131,7 +135,7 @@ export function TunerPage() {
         </div>
       )}
 
-      {/* Slot: Display area */}
+      {/* Slot: Display area — visualizer always visible */}
       <div style={{
         flex: 1,
         backgroundColor: t.colorPanelTranslucent as string,
@@ -142,19 +146,44 @@ export function TunerPage() {
         justifyContent: 'center',
         gap: '20px',
         padding: '16px 0',
+        position: 'relative',
       }}>
+        {/* Always render NoteDisplay, Meter, and Strings */}
         <NoteDisplay detected={detected} isListening={isListening} />
-        {detected && (
-          <>
-            <Meter centsOff={detected.centsOff} inTune={detected.inTune} />
-            <Strings tuning={tuning} activeStringIndex={detected.stringIndex} inTune={detected.inTune} />
-          </>
-        )}
-        {isListening && !detected && (
-          <Strings tuning={tuning} activeStringIndex={null} inTune={false} />
-        )}
-        {!isListening && (
-          <Strings tuning={tuning} activeStringIndex={null} inTune={false} />
+        <Meter
+          centsOff={detected?.centsOff ?? 0}
+          inTune={detected?.inTune ?? false}
+        />
+        <Strings
+          tuning={tuning}
+          activeStringIndex={detected?.stringIndex ?? null}
+          inTune={detected?.inTune ?? false}
+        />
+
+        {/* Semi-transparent prompt overlay when not detecting */}
+        {showPrompt && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.45)',
+            backdropFilter: 'blur(2px)',
+            WebkitBackdropFilter: 'blur(2px)',
+            zIndex: 10,
+          }}>
+            <span style={{
+              fontFamily: t.fontDisplay as string,
+              fontSize: '14px',
+              fontWeight: 700,
+              letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.8)',
+              textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+            }}>
+              {promptMessage}
+            </span>
+          </div>
         )}
       </div>
 
